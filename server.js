@@ -2,7 +2,7 @@ const express = require('express');
 const admin = require('firebase-admin');
 const path = require('path');
 const serviceAccountJson = process.env.FIREBASE_KEY;
-const serviceAccount = JSON.parse(serviceAccountJson);
+const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
 
 console.log('Admin:', admin);
