@@ -1,8 +1,10 @@
-require('dotenv').config();
-
 const express = require('express');
 const admin = require('firebase-admin');
 const path = require('path');
+
+if (!process.env.FIREBASE_KEY) {
+  throw new Error("FIREBASE_KEY manquant dans les variables Render");
+}
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
