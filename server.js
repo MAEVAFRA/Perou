@@ -4,10 +4,10 @@ const express = require('express');
 const admin = require('firebase-admin');
 const path = require('path');
 
-const serviceAccount = require('./firebase-key.json');
+const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
-console.log('Admin:', admin);
-console.log('Admin credential:', admin.credential);
+serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
