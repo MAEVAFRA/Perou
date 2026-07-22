@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏔️ Pérou Planner Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; }
+        body { font-family: 'Montserrat', sans-serif; background: #f8f9fa; color: #2c3e50; }
+        
+        /* LOGIN */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ff6b35 0%, #e8751a 100%);
+        }
+        .login-box {
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+        .login-box h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5em;
+            color: #ff6b35;
+            margin-bottom: 15px;
+        }
+        .login-box .subtitle {
+            color: #666;
+            margin-bottom: 35px;
+            font-size: 1em;
+        }
+        .login-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
+        }
+        .login-input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #ff6b35 0%, #e8751a 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.05em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+        .login-error { color: #e74c3c; margin-top: 15px; display: none; font-weight: 600; }
+        .hidden { display: none !important; }
+
+        /* HEADER */
+        .header {
+            background: url('/header-default.webp') center/cover;
+            min-height: 420px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.45) 0%, rgba(232, 117, 26, 0.45) 100%);
+            z-index: 1;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8em;
+            margin-bottom: 12px;
+            text-shadow: 3px 3px 12px rgba(0,0,0,0.3);
+            font-weight: 800;
+        }
+        .header-subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+            letter-spacing: 0.5px;
+        }
+        .header-badges {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.95em;
+            justify-content: center;
+        }
+        .badge {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 12px 22px;
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-weight: 600;
+        }
+
+        .user-select {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: rgba(255, 107, 53, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 28px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
+            z-index: 3;
+            backdrop-filter: blur(8px);
+            min-width: 180px;
+        }
+        .user-select:hover {
+            background: rgba(255, 107, 53, 0.5);
+            border-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 28px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
+            z-index: 3;
+            backdrop-filter: blur(8px);
+        }
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        /* TABS */
+        .tabs-container {
+            background: white;
+            display: flex;
+            gap: 12px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 1600px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .tabs-wrapper {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex: 1;
+            min-width: 300px;
+        }
+        .tab-btn {
+            padding: 11px 24px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-btn:hover { border-color: #ff6b35; color: #ff6b35; }
+        .tab-btn.active { background: #ff6b35; color: white; border-color: #ff6b35; }
+        
+        .tab-btn-controls {
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover .tab-btn-controls {
+            opacity: 1;
+        }
+        .tab-btn-controls button {
+            background: rgba(255, 107, 53, 0.2);
+            border: none;
+            color: #ff6b35;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            padding: 0;
+        }
+        .tab-btn:hover .tab-btn-controls button:hover {
+            background: #ff6b35;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .add-category-wrapper {
+            display: flex;
+            gap: 8px;
+            padding: 0 12px;
+            border-left: 2px solid #e0e0e0;
+        }
+        .add-category-wrapper input {
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9em;
+            min-width: 120px;
+            transition: all 0.3s;
+        }
+        .add-category-wrapper input:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        .add-category-wrapper button {
+            padding: 8px 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        .add-category-wrapper button:hover {
+            background: #229954;
+            transform: translateY(-1px);
+        }
+
+        /* CONTAINER */
+        .container { max-width: 1600px; margin: 0 auto; padding: 0 20px; }
+
+        /* LAYOUT */
+        .layout { display: grid; grid-template-columns: 1fr 380px; gap: 25px; margin: 30px auto; }
+        .activities-section { display: none; }
+        .activities-section.active { display: block; }
+        .activities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+
+        /* CARD */
+        .activity-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        .activity-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            border-color: #ff6b35;
+        }
+        .activity-card.checked { background: #fff9f5; }
+
+        /* CAROUSEL */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+            overflow: hidden;
+        }
+        .carousel-img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .carousel-img.active { display: block; }
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2em;
+            z-index: 3;
+            transition: all 0.3s;
+        }
+        .carousel-nav:hover { background: rgba(0,0,0,0.7); }
+        .carousel-prev { left: 10px; }
+        .carousel-next { right: 10px; }
+        .carousel-checkbox-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border: none;
+            z-index: 5;
+            transition: all 0.3s;
+        }
+        .carousel-checkbox-btn:hover { transform: scale(1.1); }
+        .activity-checkbox { width: 22px; height: 22px; accent-color: #ff6b35; cursor: pointer; }
+
+        /* LIKES BUBBLE */
+        .likes-bubble {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: white;
+            border: 2px solid #ff6b35;
+            border-radius: 12px;
+            padding: 8px 12px;
+            display: flex;
+            gap: 10px;
+            font-size: 0.85em;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            z-index: 10;
+        }
+        .like-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .like-count { background: #ff6b35; color: white; padding: 2px 8px; border-radius: 12px; font-weight: 700; }
+
+        .activity-body { padding: 20px; }
+        .activity-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .activity-title { font-size: 1.15em; font-weight: 700; color: #2c3e50; margin-bottom: 4px; }
+        .activity-location { font-size: 0.85em; color: #7f8c8d; }
+        .activity-actions { display: flex; gap: 10px; }
+        .btn-small {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+        .btn-small:hover { transform: scale(1.15); color: #ff6b35; }
+
+        .activity-price { font-size: 1.3em; font-weight: 800; color: #ff6b35; margin-top: 2px; }
+
+        .activity-desc { font-size: 0.9em; color: #555; line-height: 1.5; margin: 12px 0; }
+
+        /* WEBSITE LINK */
+        .website-link {
+            display: inline-block;
+            background: #e8f4ff;
+            border-left: 3px solid #0099ff;
+            padding: 10px 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+        .website-link a { color: #0099ff; text-decoration: none; font-weight: 600; }
+
+        /* REMARK */
+        .remark-box {
+            background: #fffacd;
+            border-left: 4px solid #ffd700;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        /* PROS/CONS */
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+        .pros h4, .cons h4 { font-size: 0.8em; font-weight: 700; margin-bottom: 6px; }
+        .pros h4 { color: #27ae60; }
+        .cons h4 { color: #e74c3c; }
+        .pros ul, .cons ul { list-style: none; font-size: 0.8em; }
+        .pros li { color: #27ae60; margin: 3px 0; }
+        .cons li { color: #e74c3c; margin: 3px 0; }
+        .pros li::before { content: '✓ '; font-weight: bold; }
+        .cons li::before { content: '✕ '; font-weight: bold; }
+
+        /* INFO GRID */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0;
+            padding: 12px 0;
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85em;
+        }
+        .info-item { }
+        .info-label { color: #7f8c8d; font-weight: 600; margin-bottom: 4px; display: block; }
+        .info-value { color: #2c3e50; font-weight: 500; }
+
+        /* LIKES SECTION */
+        .likes-section {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+        .like-btn {
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.2s;
+        }
+        .like-btn:hover { border-color: #ff6b35; background: #fff0e6; }
+        .like-btn.liked { background: #27ae60; color: white; border-color: #27ae60; }
+
+        /* COMMENTS */
+        .comments-section { margin-top: 15px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .comment {
+            background: #f9f9f9;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 3px solid #ff6b35;
+        }
+        .comment-author { font-weight: 700; color: #2c3e50; margin-bottom: 4px; font-size: 0.9em; }
+        .comment-text { color: #555; font-size: 0.9em; line-height: 1.4; }
+        .comment-actions { margin-top: 6px; }
+        .comment-actions button { background: none; border: none; color: #0099ff; cursor: pointer; font-weight: 600; font-size: 0.8em; }
+        .comment-btn {
+            width: 100%;
+            background: #f0f0f0;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .comment-btn:hover { background: #ff6b35; color: white; }
+
+        /* SIDEBAR */
+        .sidebar { position: sticky; top: 30px; height: fit-content; }
+        .summary-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .summary-box h2 { font-size: 1.4em; margin-bottom: 18px; color: #2c3e50; }
+
+        .budget-display {
+            background: linear-gradient(135deg, #ff6b35 0%, #e8751a 100%);
+            color: white;
+            padding: 22px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 18px;
+        }
+        .budget-amount { font-size: 2.2em; font-weight: 800; margin: 10px 0; }
+
+        .selected-info {
+            background: #f5f5f5;
+            padding: 14px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            border: 2px solid #ffe8d6;
+        }
+
+        .breakdown-list {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 18px;
+        }
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #ff6b35 0%, #e8751a 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .export-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255, 107, 53, 0.2); }
+
+        /* FORM */
+        .add-activity-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            margin: 40px auto;
+            max-width: 1600px;
+        }
+        .add-activity-section h2 { font-size: 1.6em; margin-bottom: 25px; color: #2c3e50; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full { grid-column: 1 / -1; }
+        .form-label { font-weight: 600; margin-bottom: 6px; font-size: 0.95em; color: #2c3e50; }
+        .form-input, .form-textarea, .form-select {
+            padding: 11px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95em;
+            color: #2c3e50;
+            transition: all 0.3s;
+        }
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        .form-textarea { min-height: 80px; resize: vertical; }
+
+        .file-input-wrapper {
+            border: 2px dashed #ff6b35;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, rgba(232, 117, 26, 0.08) 100%);
+        }
+        .file-input-wrapper:hover { 
+            border-color: #e8751a;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.15) 0%, rgba(232, 117, 26, 0.15) 100%);
+            transform: scale(1.01);
+        }
+        .file-input-wrapper label { 
+            cursor: pointer;
+            font-weight: 600;
+            color: #ff6b35;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        #photos-input, #edit-photos-input { display: none; }
+        .photos-preview {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        .photo-thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 6px;
+            object-fit: cover;
+            position: relative;
+            cursor: pointer;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2); }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 650px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 { margin-bottom: 20px; color: #2c3e50; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-save { flex: 1; padding: 11px; background: #ff6b35; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-cancel { flex: 1; padding: 11px; background: #e0e0e0; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+
+        .empty-state { text-align: center; padding: 30px; color: #7f8c8d; font-size: 0.95em; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .layout { grid-template-columns: 1fr; }
+            .sidebar { position: static; }
+            .header h1 { font-size: 2.2em; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .header { min-height: 220px; }
+            .header h1 { font-size: 1.8em; }
+            .tabs-container { padding: 12px; gap: 8px; }
+            .tab-btn { padding: 8px 16px; font-size: 0.85em; }
+            .activities-grid { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; }
+            .add-activity-section { padding: 20px; margin: 25px 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-box">
+            <h1>🏔️</h1>
+            <h1 style="font-size: 2.5em; margin-top: -20px;">Pérou</h1>
+            <div class="subtitle">Planificateur d'Activités Professionnel</div>
+            <input type="password" class="login-input" id="password-input" placeholder="Mot de passe" onkeypress="if(event.key==='Enter') login()">
+            <button class="login-btn" onclick="login()">Se connecter</button>
+            <div class="login-error" id="login-error">❌ Mot de passe incorrect</div>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="app-screen" class="hidden">
+        <!-- HEADER -->
+        <div class="header" id="headerBg">
+            <select class="user-select" id="user-select" onchange="changeUser()">
+                <option value="">👤 Choisir voyageur</option>
+            </select>
+            
+            <div class="header-content">
+                <h1>🏔️ Pérou</h1>
+                <p class="header-subtitle">Planificateur d'Activités • Budget Collectif • 15 Jours d'Aventure</p>
+                <div class="header-badges">
+                    <div class="badge">📅 Du 17/10 au 31/10</div>
+                    <div class="badge">👥 4 Voyageurs</div>
+                    <div class="badge">💰 Budget: <strong id="header-budget">0€</strong></div>
+                </div>
+            </div>
+            
+            <button class="logout-btn" onclick="logout()">Déconnexion</button>
+        </div>
+
+        <div class="container">
+            <!-- TABS -->
+            <div class="tabs-container" id="tabs-container"></div>
+
+            <!-- LAYOUT -->
+            <div class="layout">
+                <div id="activities-container"></div>
+
+                <!-- SIDEBAR -->
+                <div class="sidebar">
+                    <div class="summary-box">
+                        <h2>💰 Budget</h2>
+                        <div class="budget-display">
+                            <div style="font-size: 0.95em;">Par personne</div>
+                            <div class="budget-amount" id="total-price">0€</div>
+                            <div style="font-size: 0.85em;">4 voyageurs</div>
+                        </div>
+                        <div class="selected-info">
+                            <span id="selected-count">0</span> activité(s)
+                        </div>
+                        <div class="breakdown-list" id="breakdown">
+                            <div class="empty-state">Sélectionnez des activités</div>
+                        </div>
+                        <button class="export-btn" onclick="exportData()">📥 Télécharger liste</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD ACTIVITY -->
+            <div class="add-activity-section">
+                <h2>➕ Ajouter une activité</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Catégorie</label>
+                        <select class="form-input" id="new-category"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-input" id="new-name" placeholder="Ex: Machu Picchu">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Prix (€/pers)</label>
+                        <input type="number" class="form-input" id="new-price" placeholder="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Lieu</label>
+                        <input type="text" class="form-input" id="new-location" placeholder="Région, Ville">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Accès</label>
+                        <input type="text" class="form-input" id="new-access" placeholder="Ex: 3h en voiture">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Durée</label>
+                        <input type="text" class="form-input" id="new-duration" placeholder="Ex: 2-3h">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-textarea" id="new-description" placeholder="Détails et informations..."></textarea>
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Remarque personnelle</label>
+                        <textarea class="form-textarea" id="new-remark" placeholder="Tes notes, conseils, impressions..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Site web</label>
+                        <input type="url" class="form-input" id="new-website" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Quand réserver</label>
+                        <input type="text" class="form-input" id="new-reserve" placeholder="Ex: 1 semaine avant">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Photos (jusqu'à 5)</label>
+                        <div class="file-input-wrapper" onclick="document.getElementById('photos-input').click()">
+                            <label>📸 Cliquer pour ajouter des photos</label>
+                        </div>
+                        <input type="file" id="photos-input" multiple accept="image/*">
+                        <div class="photos-preview" id="photos-preview"></div>
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Avantages (virgule séparés)</label>
+                        <input type="text" class="form-input" id="new-pros" placeholder="Unique, Pas cher, Magnifique">
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Limites (virgule séparés)</label>
+                        <input type="text" class="form-input" id="new-cons" placeholder="Loin, Difficile, Cher">
+                    </div>
+                    <button class="btn-add" onclick="addNewActivity()">➕ Ajouter l'activité</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT MODAL -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h2>✏️ Modifier l'activité</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Catégorie</label>
+                    <select class="form-input" id="edit-category"></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nom</label>
+                    <input type="text" class="form-input" id="edit-name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Prix</label>
+                    <input type="number" class="form-input" id="edit-price" min="0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Lieu</label>
+                    <input type="text" class="form-input" id="edit-location">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Accès</label>
+                    <input type="text" class="form-input" id="edit-access">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Durée</label>
+                    <input type="text" class="form-input" id="edit-duration">
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="edit-description"></textarea>
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Remarque</label>
+                    <textarea class="form-textarea" id="edit-remark"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Site web</label>
+                    <input type="url" class="form-input" id="edit-website">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Réserver</label>
+                    <input type="text" class="form-input" id="edit-reserve">
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Photos (jusqu'à 5)</label>
+                    <div class="file-input-wrapper" onclick="document.getElementById('edit-photos-input').click()">
+                        <label>📸 Cliquer pour ajouter/modifier les photos</label>
+                    </div>
+                    <input type="file" id="edit-photos-input" multiple accept="image/*">
+                    <div class="photos-preview" id="edit-photos-preview"></div>
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Avantages</label>
+                    <input type="text" class="form-input" id="edit-pros">
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Limites</label>
+                    <input type="text" class="form-input" id="edit-cons">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-save" onclick="saveEdit()">💾 Sauvegarder</button>
+                    <button class="btn-cancel" onclick="closeModal()">❌ Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = '';
+        let currentUser = null;
+        let currentTab = 'Culturel';
+        let editingId = null;
+        let config = {};
+        let activitiesDB = {};
+        let selectedPhotos = [];
+        let editingPhotos = [];
+
+        // LOGIN
+        async function login() {
+            const password = document.getElementById('password-input').value;
+            if (!password) return;
+            try {
+                const res = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('login-screen').classList.add('hidden');
+                    document.getElementById('app-screen').classList.remove('hidden');
+                    loadData();
+                } else {
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            } catch (e) {
+                console.error('Erreur login:', e);
+            }
+        }
+
+        // LOAD DATA
+        async function loadData() {
+            try {
+                const [configRes, activitiesRes] = await Promise.all([
+                    fetch(`${API_URL}/api/config`),
+                    fetch(`${API_URL}/api/activities`)
+                ]);
+                config = await configRes.json();
+                activitiesDB = await activitiesRes.json();
+            } catch (e) {
+                console.error('Erreur chargement, valeurs par défaut:', e);
+                config = {
+                    password: 'perou2024',
+                    headerImage: null,
+                    categories: ['Culturel', 'Sportif', 'Nature', 'Aventure', 'Exploration'],
+                    users: ['Maeva', 'Briac', 'Solene', 'Maze']
+                };
+                activitiesDB = {
+                    'Culturel': [],
+                    'Sportif': [],
+                    'Nature': [],
+                    'Aventure': [],
+                    'Exploration': []
+                };
+            }
+
+            const userSelect = document.getElementById('user-select');
+            config.users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user;
+                option.textContent = '👤 ' + user;
+                userSelect.appendChild(option);
+            });
+
+            ['new-category', 'edit-category'].forEach(id => {
+                const select = document.getElementById(id);
+                config.categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat;
+                    option.textContent = cat;
+                    select.appendChild(option);
+                });
+            });
+
+            renderTabs();
+            renderActivities();
+        }
+
+        // GESTION CATÉGORIES
+        function renderTabs() {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = '';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'tabs-wrapper';
+            
+            config.categories.forEach((cat, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+                btn.innerHTML = `
+                    <span>${cat}</span>
+                    <div class="tab-btn-controls">
+                        <button onclick="event.stopPropagation(); editCategory('${cat}')" title="Renommer">✏️</button>
+                        <button onclick="event.stopPropagation(); deleteCategory('${cat}')" title="Supprimer">🗑️</button>
+                    </div>
+                `;
+                btn.onclick = () => switchTab(cat);
+                wrapper.appendChild(btn);
+            });
+            
+            container.appendChild(wrapper);
+            
+            const addWrapper = document.createElement('div');
+            addWrapper.className = 'add-category-wrapper';
+            addWrapper.innerHTML = `
+                <input type="text" id="new-cat-input" placeholder="Nouvelle catégorie" onkeypress="if(event.key==='Enter') addCategory()">
+                <button onclick="addCategory()">➕</button>
+            `;
+            container.appendChild(addWrapper);
+        }
+
+        function switchTab(cat) {
+            currentTab = cat;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.closest('.tab-btn').classList.add('active');
+            document.querySelectorAll('.activities-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`section-${cat}`)?.classList.add('active');
+        }
+
+        function addCategory() {
+            const input = document.getElementById('new-cat-input');
+            const newCat = input.value.trim();
+            if (!newCat) {
+                alert('Entre un nom de catégorie!');
+                return;
+            }
+            if (config.categories.includes(newCat)) {
+                alert('Cette catégorie existe déjà!');
+                return;
+            }
+            config.categories.push(newCat);
+            activitiesDB[newCat] = [];
+            input.value = '';
+            saveConfig();
+            renderTabs();
+            renderActivities();
+        }
+
+        async function editCategory(cat) {
+            const newName = prompt(`Renommer "${cat}" en:`, cat);
+            if (!newName || newName === cat) return;
+            if (newName.trim() === '') {
+                alert('Le nom ne peut pas être vide!');
+                return;
+            }
+            if (config.categories.includes(newName)) {
+                alert('Cette catégorie existe déjà!');
+                return;
+            }
+            
+            const idx = config.categories.indexOf(cat);
+            config.categories[idx] = newName;
+            activitiesDB[newName] = activitiesDB[cat];
+            delete activitiesDB[cat];
+            
+            if (currentTab === cat) currentTab = newName;
+            
+            await saveConfig();
+            renderTabs();
+            renderActivities();
+        }
+
+        async function deleteCategory(cat) {
+            if (!confirm(`Supprimer la catégorie "${cat}" (${activitiesDB[cat]?.length || 0} activités)?`)) return;
+            config.categories = config.categories.filter(c => c !== cat);
+            delete activitiesDB[cat];
+            await saveConfig();
+            currentTab = config.categories[0] || 'Culturel';
+            renderTabs();
+            renderActivities();
+        }
+
+        function changeUser() {
+            currentUser = document.getElementById('user-select').value || null;
+            localStorage.setItem('currentUser', currentUser || '');
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('app-screen').classList.add('hidden');
+            document.getElementById('password-input').value = '';
+        }
+
+        async function saveConfig() {
+            await fetch(`${API_URL}/api/config`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            });
+        }
+
+        document.getElementById('photos-input').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files).slice(0, 5);
+            selectedPhotos = [];
+            const preview = document.getElementById('photos-preview');
+            preview.innerHTML = '';
+
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    selectedPhotos.push(event.target.result);
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'photo-thumb';
+                    img.onclick = () => {
+                        selectedPhotos.splice(selectedPhotos.indexOf(event.target.result), 1);
+                        img.remove();
+                    };
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        document.getElementById('edit-photos-input').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files).slice(0, 5);
+            editingPhotos = [];
+            const preview = document.getElementById('edit-photos-preview');
+            preview.innerHTML = '';
+
+            files.forEach((file) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    editingPhotos.push(event.target.result);
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = 'photo-thumb';
+                    img.onclick = () => {
+                        editingPhotos.splice(editingPhotos.indexOf(event.target.result), 1);
+                        img.remove();
+                    };
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        function renderActivities() {
+            const container = document.getElementById('activities-container');
+            container.innerHTML = '';
+
+            config.categories.forEach(category => {
+                const section = document.createElement('div');
+                section.className = 'activities-section' + (category === currentTab ? ' active' : '');
+                section.id = `section-${category}`;
+
+                const grid = document.createElement('div');
+                grid.className = 'activities-grid';
+
+                const activities = activitiesDB[category] || [];
+                if (activities.length === 0) {
+                    grid.innerHTML = '<div class="empty-state">Aucune activité • Ajoute la première en bas!</div>';
+                } else {
+                    activities.forEach((activity, index) => {
+                        grid.appendChild(createCard(activity, category, index));
+                    });
+                }
+
+                section.appendChild(grid);
+                container.appendChild(section);
+            });
+        }
+
+        function createCard(activity, category, index) {
+            const card = document.createElement('div');
+            card.className = 'activity-card';
+
+            const photosHtml = (activity.photos && activity.photos.length > 0)
+                ? activity.photos.map((p, i) => `<img src="${p}" class="carousel-img ${i === 0 ? 'active' : ''}" onerror="this.src='https://via.placeholder.com/340x240?text=Photo+indisponible'">`).join('')
+                : '<img src="https://via.placeholder.com/340x240?text=Pas+de+photo" class="carousel-img active">';
+
+            const commentsHtml = (activity.comments || []).map((c, i) => `
+                <div class="comment">
+                    <div class="comment-author">👤 ${c.user}</div>
+                    <div class="comment-text">${c.text}</div>
+                    ${currentUser === c.user ? `<div class="comment-actions"><button onclick="deleteComment(${activity.id}, ${i})">Supprimer</button></div>` : ''}
+                </div>
+            `).join('');
+
+            const likeCount = Object.values(activity.likes || {}).filter(l => l === 'like').length;
+            const hasPhotos = activity.photos && activity.photos.length > 1;
+
+            card.innerHTML = `
+                <div class="carousel-container">
+                    <div class="likes-bubble">
+                        <div class="like-stat">
+                            <span>👍</span>
+                            <span class="like-count">${likeCount}</span>
+                        </div>
+                    </div>
+                    ${photosHtml}
+                    ${hasPhotos ? `
+                        <button class="carousel-nav carousel-prev" onclick="prevImage(this)">❮</button>
+                        <button class="carousel-nav carousel-next" onclick="nextImage(this)">❯</button>
+                    ` : ''}
+                    <button class="carousel-checkbox-btn" onclick="event.stopPropagation()">
+                        <input type="checkbox" class="activity-checkbox" data-price="${activity.price || 0}">
+                    </button>
+                </div>
+                <div class="activity-body">
+                    <div class="activity-header">
+                        <div>
+                            <div class="activity-title">${activity.name}</div>
+                            <div class="activity-location">📍 ${activity.location}</div>
+                        </div>
+                        <div class="activity-actions">
+                            <button class="btn-small" onclick="editActivity(${activity.id}, '${category}', ${index})">✏️</button>
+                            <button class="btn-small" onclick="deleteActivity('${category}', ${index})">🗑️</button>
+                        </div>
+                    </div>
+
+                    ${activity.website ? `<div class="website-link">🌐 <a href="${activity.website}" target="_blank">Voir site officiel</a></div>` : ''}
+
+                    <p class="activity-desc">${activity.description}</p>
+
+                    ${activity.remark ? `<div class="remark-box">📝 <strong>Note perso:</strong> ${activity.remark}</div>` : ''}
+
+                    <div class="pros-cons">
+                        <div class="pros"><h4>✓ Pour</h4><ul>${(activity.pros || []).map(p => `<li>${p}</li>`).join('')}</ul></div>
+                        <div class="cons"><h4>✕ Contre</h4><ul>${(activity.cons || []).map(c => `<li>${c}</li>`).join('')}</ul></div>
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">🚗 Accès</div>
+                            <div class="info-value">${activity.access || '-'}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">⏱️ Durée</div>
+                            <div class="info-value">${activity.duration || '-'}</div>
+                        </div>
+                    </div>
+
+                    <div style="padding-top: 10px; border-top: 1px solid #f0f0f0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div class="activity-price">${activity.price || 0}€</div>
+                            <div style="font-size: 0.85em; color: #7f8c8d;">Réserver: ${activity.reserve || '-'}</div>
+                        </div>
+                    </div>
+
+                    <div class="likes-section">
+                        ${config.users.map(user => `
+                            <button class="like-btn ${activity.likes?.[user] === 'like' ? 'liked' : ''}" onclick="toggleLike(${activity.id}, '${user}')">
+                                👍 ${user}
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <div class="comments-section">
+                        ${commentsHtml}
+                        <button class="comment-btn" onclick="promptComment(${activity.id})">💬 Ajouter un commentaire</button>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function nextImage(btn) {
+            const container = btn.closest('.carousel-container');
+            const imgs = container.querySelectorAll('.carousel-img');
+            const active = container.querySelector('.carousel-img.active');
+            const idx = Array.from(imgs).indexOf(active);
+            imgs.forEach(i => i.classList.remove('active'));
+            imgs[(idx + 1) % imgs.length].classList.add('active');
+        }
+
+        function prevImage(btn) {
+            const container = btn.closest('.carousel-container');
+            const imgs = container.querySelectorAll('.carousel-img');
+            const active = container.querySelector('.carousel-img.active');
+            const idx = Array.from(imgs).indexOf(active);
+            imgs.forEach(i => i.classList.remove('active'));
+            imgs[(idx - 1 + imgs.length) % imgs.length].classList.add('active');
+        }
+
+        function getActivityById(id) {
+            for (let cat in activitiesDB) {
+                const found = activitiesDB[cat].find(a => a.id === id);
+                if (found) return { activity: found, category: cat };
+            }
+            return null;
+        }
+
+        function toggleLike(id, user) {
+            const result = getActivityById(id);
+            if (!result) return;
+            const current = result.activity.likes?.[user];
+            result.activity.likes[user] = current === 'like' ? null : 'like';
+            saveActivities();
+            renderActivities();
+        }
+
+        function promptComment(id) {
+            if (!currentUser) {
+                alert('Sélectionne ton utilisateur d\'abord!');
+                return;
+            }
+            const text = prompt('Ton commentaire:');
+            if (!text) return;
+            const result = getActivityById(id);
+            if (!result) return;
+            if (!result.activity.comments) result.activity.comments = [];
+            result.activity.comments.push({ user: currentUser, text });
+            saveActivities();
+            renderActivities();
+        }
+
+        function deleteComment(id, index) {
+            const result = getActivityById(id);
+            if (result?.activity?.comments) {
+                result.activity.comments.splice(index, 1);
+                saveActivities();
+                renderActivities();
+            }
+        }
+
+        function updateBudget() {
+            const checkboxes = document.querySelectorAll('.activity-checkbox:checked');
+            let total = 0;
+            const breakdown = [];
+
+            checkboxes.forEach(cb => {
+                const price = parseFloat(cb.getAttribute('data-price')) || 0;
+                total += price;
+            });
+
+            document.querySelectorAll('.activity-card').forEach(card => {
+                const cb = card.querySelector('.activity-checkbox');
+                if (cb.checked) {
+                    const title = card.querySelector('.activity-title').textContent;
+                    const price = parseFloat(cb.getAttribute('data-price')) || 0;
+                    breakdown.push({ name: title, price });
+                    card.classList.add('checked');
+                } else {
+                    card.classList.remove('checked');
+                }
+            });
+
+            document.getElementById('total-price').textContent = total.toFixed(2) + '€';
+            document.getElementById('header-budget').textContent = total.toFixed(2) + '€';
+            document.getElementById('selected-count').textContent = checkboxes.length;
+            document.getElementById('breakdown').innerHTML = breakdown.length
+                ? breakdown.map(b => `<div class="breakdown-item"><span>${b.name}</span><span>${b.price}€</span></div>`).join('')
+                : '<div class="empty-state">Sélectionnez des activités</div>';
+        }
+
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('activity-checkbox')) updateBudget();
+        });
+
+        async function addNewActivity() {
+            const activity = {
+                id: Date.now(),
+                name: document.getElementById('new-name').value,
+                category: document.getElementById('new-category').value,
+                price: parseFloat(document.getElementById('new-price').value) || 0,
+                location: document.getElementById('new-location').value,
+                access: document.getElementById('new-access').value,
+                duration: document.getElementById('new-duration').value,
+                description: document.getElementById('new-description').value,
+                remark: document.getElementById('new-remark').value,
+                website: document.getElementById('new-website').value,
+                reserve: document.getElementById('new-reserve').value,
+                photos: selectedPhotos,
+                pros: document.getElementById('new-pros').value.split(',').map(p => p.trim()).filter(p => p),
+                cons: document.getElementById('new-cons').value.split(',').map(c => c.trim()).filter(c => c),
+                likes: config.users.reduce((obj, u) => { obj[u] = null; return obj; }, {}),
+                comments: []
+            };
+
+            if (!activity.name || !activity.location) {
+                alert('Remplis nom et lieu!');
+                return;
+            }
+
+            activitiesDB[activity.category].push(activity);
+            await saveActivities();
+            renderActivities();
+
+            document.getElementById('new-name').value = '';
+            document.getElementById('new-price').value = '';
+            document.getElementById('new-location').value = '';
+            document.getElementById('new-access').value = '';
+            document.getElementById('new-duration').value = '';
+            document.getElementById('new-description').value = '';
+            document.getElementById('new-remark').value = '';
+            document.getElementById('new-website').value = '';
+            document.getElementById('new-reserve').value = '';
+            document.getElementById('new-pros').value = '';
+            document.getElementById('new-cons').value = '';
+            selectedPhotos = [];
+            document.getElementById('photos-preview').innerHTML = '';
+
+            alert('✅ Activité ajoutée!');
+        }
+
+        function editActivity(id, category, index) {
+            editingId = { id, category, index };
+            const activity = activitiesDB[category][index];
+            editingPhotos = activity.photos ? [...activity.photos] : [];
+
+            document.getElementById('edit-category').value = category;
+            document.getElementById('edit-name').value = activity.name;
+            document.getElementById('edit-price').value = activity.price;
+            document.getElementById('edit-location').value = activity.location;
+            document.getElementById('edit-access').value = activity.access || '';
+            document.getElementById('edit-duration').value = activity.duration || '';
+            document.getElementById('edit-description').value = activity.description;
+            document.getElementById('edit-remark').value = activity.remark || '';
+            document.getElementById('edit-website').value = activity.website || '';
+            document.getElementById('edit-reserve').value = activity.reserve || '';
+            document.getElementById('edit-pros').value = (activity.pros || []).join(', ');
+            document.getElementById('edit-cons').value = (activity.cons || []).join(', ');
+
+            const preview = document.getElementById('edit-photos-preview');
+            preview.innerHTML = '';
+            if (editingPhotos.length > 0) {
+                editingPhotos.forEach((photo) => {
+                    const img = document.createElement('img');
+                    img.src = photo;
+                    img.className = 'photo-thumb';
+                    img.onclick = () => {
+                        editingPhotos.splice(editingPhotos.indexOf(photo), 1);
+                        img.remove();
+                    };
+                    preview.appendChild(img);
+                });
+            }
+
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        async function saveEdit() {
+            if (!editingId) return;
+            const { category, index } = editingId;
+            const newCat = document.getElementById('edit-category').value;
+            const activity = activitiesDB[category][index];
+
+            activity.name = document.getElementById('edit-name').value;
+            activity.price = parseFloat(document.getElementById('edit-price').value) || 0;
+            activity.location = document.getElementById('edit-location').value;
+            activity.access = document.getElementById('edit-access').value;
+            activity.duration = document.getElementById('edit-duration').value;
+            activity.description = document.getElementById('edit-description').value;
+            activity.remark = document.getElementById('edit-remark').value;
+            activity.website = document.getElementById('edit-website').value;
+            activity.reserve = document.getElementById('edit-reserve').value;
+            activity.photos = editingPhotos;
+            activity.pros = document.getElementById('edit-pros').value.split(',').map(p => p.trim()).filter(p => p);
+            activity.cons = document.getElementById('edit-cons').value.split(',').map(c => c.trim()).filter(c => c);
+
+            if (newCat !== category) {
+                activitiesDB[category].splice(index, 1);
+                activitiesDB[newCat].push(activity);
+            }
+
+            await saveActivities();
+            closeModal();
+            renderActivities();
+            updateBudget();
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+            editingId = null;
+        }
+
+        async function deleteActivity(category, index) {
+            if (confirm('Supprimer cette activité?')) {
+                activitiesDB[category].splice(index, 1);
+                await saveActivities();
+                renderActivities();
+                updateBudget();
+            }
+        }
+
+        async function saveActivities() {
+            await fetch(`${API_URL}/api/activities`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(activitiesDB)
+            });
+        }
+
+        function exportData() {
+            const checkboxes = document.querySelectorAll('.activity-checkbox:checked');
+            if (!checkboxes.length) {
+                alert('Sélectionnez des activités!');
+                return;
+            }
+
+            let text = '🏔️ PÉROU - VOYAGE 15 JOURS\n';
+            text += 'Du 17/10 au 31/10\n';
+            text += '='.repeat(60) + '\n\n';
+            let total = 0;
+
+            checkboxes.forEach((cb, i) => {
+                const price = parseFloat(cb.getAttribute('data-price')) || 0;
+                const card = cb.closest('.activity-card');
+                const title = card.querySelector('.activity-title').textContent;
+                const location = card.querySelector('.activity-location').textContent;
+                text += `${i + 1}. ${title}\n${location}\n💰 ${price}€\n\n`;
+                total += price;
+            });
+
+            text += '='.repeat(60) + '\n';
+            text += `💰 Budget par personne: ${total.toFixed(2)}€\n`;
+            text += `👥 Coût total (4 personnes): ${(total * 4).toFixed(2)}€\n`;
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'perou-' + new Date().toISOString().split('T')[0] + '.txt';
+            link.click();
+        }
+
+        loadData();
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            document.getElementById('user-select').value = savedUser;
+            currentUser = savedUser;
+        }
+    </script>
+</body>
+</html>
